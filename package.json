@@ -1,0 +1,29 @@
+{
+  "name": "chatapi",
+  "version": "1.0.0",
+  "description": "A micro service for chatting",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MilesMorales314/ChatMicroService.git"
+  },
+  "author": "Mahesh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MilesMorales314/ChatMicroService/issues"
+  },
+  "homepage": "https://github.com/MilesMorales314/ChatMicroService#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "chatapi": "file:",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.3",
+    "socket.io": "^4.8.1"
+  }
+}
