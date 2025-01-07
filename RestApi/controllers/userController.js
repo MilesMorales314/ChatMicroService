@@ -120,3 +120,24 @@ export const signinUser = async (req, res) => {
         return res.status(500).json({ message: `Error occurred: ${error.message}` });
     }
 };
+
+export const signout = (req, res) => {
+    try {
+        const cookie = req.cookies?.authentication
+
+        if (!cookie) {
+            res.status(400).json("User already logged out.")
+        }
+
+        res.clearCookie('authentication', {
+            httpOnly: true, // Ensure it matches the original cookie settings
+            secure: process.env.NODE_ENV === 'production', // Match production environment
+            sameSite: 'strict', // Match the original setting
+        });
+
+        return res.status(200).json({ message: "User successfully logged out." });
+    } catch (error) {
+        console.error("Error during logout:", error.message);
+        return res.status(500).json({ message: `Error occurred: ${error.message}` });
+    }
+}
