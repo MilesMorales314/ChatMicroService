@@ -121,7 +121,7 @@ export const signinUser = async (req, res) => {
     }
 };
 
-export const signout = (req, res) => {
+export const signoutUser = (req, res) => {
     try {
         const cookie = req.cookies?.authentication
 
