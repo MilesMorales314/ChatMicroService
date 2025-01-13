@@ -1,14 +1,18 @@
 import jwt from "jsonwebtoken"
 
-const secretKey = env.SECRET_KEY || "defaultKey"
+const secretKey = process.env.SECRET_KEY || "defaultKey"
 
 export const generateToken = (payload, expiration = "3d") => {
-    const token = jwt.sign(payload, secretKey, {
-        expiresIn: expiration
-    })
-
-    return token
-}
+    try {
+        const token = jwt.sign(payload, secretKey, {
+            expiresIn: expiration,
+        });
+        return token;
+    } catch (error) {
+        console.error("Error generating token:", error.message);
+        throw new Error("Token generation failed");
+    }
+};
 
 export const decodeToken = (token) => {
     try {

@@ -10,7 +10,17 @@ const userSchema = new Schema({
         type: String,
         required: true,
         validation: (val) => ((val !== null) && (!!val.trim()))
+    },
+    profilePicture: {
+        type: String
+    },
+    onlineStatus: {
+        type: Boolean,
+        default: false
+    },
+    lastSeen: {
+        type: Date
     }
 })
 
-export default mongoose.model(userSchema);
+export default mongoose.model("User", userSchema);

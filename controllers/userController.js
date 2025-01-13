@@ -1,6 +1,6 @@
-import User from "../models/User"
-import { decodeToken, generateToken } from "../utils/tokenManager"
-import { encryptPassword, matchPasswords } from "../utils/passwordManager"
+import User from "../models/User.js"
+import { decodeToken, generateToken } from "../utils/tokenManager.js"
+import { encryptPassword, matchPasswords } from "../utils/passwordManager.js"
 
 export const signupUser = async (req, res) => {
     try {
@@ -62,43 +62,42 @@ export const signinUser = async (req, res) => {
         let foundUser = null;
 
         // Decode token if cookie is present
-        if (cookie) {
+        if (!username && !password && cookie) {
             try {
                 foundUser = decodeToken(cookie); // Ensure decodeToken handles errors gracefully
-            } catch (err) {
-                console.error("Invalid token:", err.message);
+            } catch (error) {
+                console.error("Invalid token:", error.message);
                 return res.status(400).json({ message: "Invalid authentication token." });
+            }
+        } else {
+            // Validate username and password
+            if (!username || username.length === 0) {
+                return res.status(400).json({ message: "Missing Username." });
+            }
+    
+            if (!password || password.length === 0) {
+                return res.status(400).json({ message: "Missing Password." });
+            }
+    
+            // Fetch user from the database if not found in token
+            foundUser = await User.findOne({ username });
+    
+            if (!foundUser) {
+                return res.status(404).json({ message: "User not found." });
+            }
+    
+            // Validate the password
+            const validated = await matchPasswords(password, foundUser.password);
+    
+            if (!validated) {
+                return res.status(401).json({ message: "Invalid credentials." });
             }
         }
 
-        // Validate username and password
-        if (!foundUser && (!username || username.length === 0)) {
-            return res.status(400).json({ message: "Missing Username." });
-        }
-
-        if (!foundUser && !password) {
-            return res.status(400).json({ message: "Missing Password." });
-        }
-
-        // Fetch user from the database if not found in token
-        if (!foundUser) {
-            foundUser = await User.findOne({ username });
-        }
-
-        if (!foundUser) {
-            return res.status(404).json({ message: "User not found." });
-        }
-
-        // Validate the password
-        const validated = await matchPasswords(password, foundUser.password);
-
-        if (!validated) {
-            return res.status(401).json({ message: "Invalid credentials." });
-        }
 
         // Generate authentication token
         const authToken = generateToken({
-            userId: foundUser._id,
+            _id: foundUser._id,
             username: foundUser.username,
         });
 
